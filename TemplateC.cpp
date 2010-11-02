@@ -243,7 +243,7 @@ initializeCL(void)
 	// Create an OpenCL context
 	/////////////////////////////////////////////////////////////////
     context = clCreateContextFromType(cps, 
-                                      CL_DEVICE_TYPE_GPU, 
+                                      CL_DEVICE_TYPE_GPU | CL_DEVICE_TYPE_CPU, 
                                       NULL, 
                                       NULL, 
                                       &status);
