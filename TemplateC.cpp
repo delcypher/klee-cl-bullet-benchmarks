@@ -228,7 +228,7 @@ initializeCL(void)
 
     if(NULL == platform)
     {
-        std::cout << "NULL platform found so Exiting Application." << std::endl;
+        puts("NULL platform found so Exiting Application.");
         return;
     }
 
@@ -588,14 +588,12 @@ void print1DArray(
     cl_uint i;
     cl_uint numElementsToPrint = (256 < length) ? 256 : length;
 
-    std::cout << std::endl;
-    std::cout << arrayName << ":" << std::endl;
+    printf("\n%s:\n", arrayName.c_str());
     for(i = 0; i < numElementsToPrint; ++i)
     {
-        std::cout << arrayData[i] << " ";
+        printf("%u ", arrayData[i]);
     }
-    std::cout << std::endl;
-
+    puts("");
 }
 
 void verify()
@@ -606,9 +604,9 @@ void verify()
             passed = false;
 
     if(passed == true)
-        std::cout << "Passed!\n";
+        puts("Passed!");
     else
-        std::cout << "Failed!\n";
+        puts("Failed!");
 }
 
 int 
