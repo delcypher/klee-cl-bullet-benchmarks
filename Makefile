@@ -1,6 +1,6 @@
 include Makefile.config
 
-CPPFLAGS = -I/usr/include/nvidia-current
+CPPFLAGS = -I$(KLEE_PATH)/include
 LDFLAGS = -lOpenCL
    
 all: TemplateC TemplateC.bc
