@@ -150,7 +150,7 @@ void initializeCL(void);
 /*
  *
  */
-std::string convertToString(const char * filename);
+char *convertToString(const char * filename);
 
 /*
  * This is called once the OpenCL context, memory etc. are set up,

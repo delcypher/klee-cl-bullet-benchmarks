@@ -133,12 +133,11 @@ initializeHost(void)
 /*
  * Converts the contents of a file into a string
  */
-std::string
+char *
 convertToString(const char *filename)
 {
 	size_t size;
 	char*  str;
-	std::string s;
 
 	std::fstream f(filename, (std::fstream::in | std::fstream::binary));
 
@@ -160,9 +159,7 @@ convertToString(const char *filename)
 		f.close();
 		str[size] = '\0';
 	
-		s = str;
-		delete[] str;
-		return s;
+		return str;
 	}
 	return NULL;
 }
@@ -337,8 +334,7 @@ initializeCL(void)
 	// Load CL file, build CL program object, create CL kernel object
 	/////////////////////////////////////////////////////////////////
     const char * filename  = "TemplateC_Kernels.cl";
-    std::string  sourceStr = convertToString(filename);
-    const char * source    = sourceStr.c_str();
+    const char * source    = convertToString(filename);
     size_t sourceSize[]    = { strlen(source) };
 
     program = clCreateProgramWithSource(
