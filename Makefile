@@ -1,6 +1,6 @@
 include Makefile.config
 
-CPPFLAGS = -I$(KLEE_PATH)/include
+CPPFLAGS = -I$(KLEE_PATH)/include -ggdb3
 LDFLAGS = -lOpenCL
    
 all: TemplateC TemplateC.bc
