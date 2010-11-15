@@ -5,5 +5,5 @@ LDFLAGS = -lOpenCL
    
 all: TemplateC TemplateC.bc
 
-TemplateC.bc: TemplateC.cpp
+%.bc: %.cpp
 	$(LLVM_BUILD_PATH)/bin/clang++ $(CPPFLAGS) -emit-llvm -c -o $@ $<
