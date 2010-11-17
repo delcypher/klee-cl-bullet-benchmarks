@@ -92,6 +92,10 @@ jurisdiction and venue of these courts.
 
 #include "TemplateC.hpp"
 
+#ifdef __KLEE
+#include <klee/klee.h>
+#endif
+
 /*
  * \brief Host Initialization 
  *        Allocate and initialize memory 
@@ -123,8 +127,12 @@ initializeHost(void)
 		return; 
 	}
 
+#ifdef __KLEE
+    klee_make_symbolic(input, sizeInBytes, "input");
+#else
     for(cl_uint i = 0; i < width; i++)
         input[i] = i;
+#endif
 
 	// print input array
 	print1DArray(std::string("Input").c_str(), input, width);
@@ -587,7 +595,11 @@ void print1DArray(
     printf("\n%s:\n", arrayName.c_str());
     for(i = 0; i < numElementsToPrint; ++i)
     {
+#ifdef __KLEE
+        klee_print_expr("arrayData", arrayData[i]);
+#else
         printf("%u ", arrayData[i]);
+#endif
     }
     puts("");
 }
