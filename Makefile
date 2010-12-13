@@ -7,3 +7,6 @@ all: TemplateC TemplateC.bc
 
 %.bc: %.cpp
 	$(LLVM_BUILD_PATH)/bin/clang++ $(CPPFLAGS) -D__KLEE -emit-llvm -c -o $@ $<
+
+%.bc: %.c
+	$(LLVM_BUILD_PATH)/bin/clang $(CPPFLAGS) -D__KLEE -emit-llvm -c -o $@ $<
