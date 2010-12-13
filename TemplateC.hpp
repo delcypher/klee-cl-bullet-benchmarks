@@ -176,7 +176,7 @@ void cleanupHost(void);
  * Prints Array name followed by elements.
  */
 void print1DArray(
-		 const std::string arrayName, 
+		 const char * arrayName, 
          const unsigned int * arrayData, 
          const unsigned int length);
 

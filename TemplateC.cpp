@@ -135,7 +135,7 @@ initializeHost(void)
 #endif
 
 	// print input array
-	print1DArray(std::string("Input").c_str(), input, width);
+	print1DArray("Input", input, width);
 }
 
 /*
@@ -585,14 +585,14 @@ cleanupHost(void)
  *        Print Array name followed by elements.
  */
 void print1DArray(
-		 const std::string arrayName, 
+		 const char *arrayName, 
          const unsigned int * arrayData, 
          const unsigned int length)
 {
     cl_uint i;
     cl_uint numElementsToPrint = (256 < length) ? 256 : length;
 
-    printf("\n%s:\n", arrayName.c_str());
+    printf("\n%s:\n", arrayName);
     for(i = 0; i < numElementsToPrint; ++i)
     {
 #ifdef __KLEE
@@ -630,7 +630,7 @@ main(int argc, char * argv[])
     runCLKernels();
 
     // Print output array
-    print1DArray(std::string("Output"), output, width);
+    print1DArray("Output", output, width);
 
     // verify output
     verify();
