@@ -22,7 +22,12 @@ int main(int argc, char **argv) {
   worldInfo.water_normal = symbolic<btVector3>("water_normal");
   worldInfo.m_gravity = symbolic<btVector3>("m_gravity");
 
-  btSoftBody body1(&worldInfo, 3, symbolic<btVector3[3]>("x"), symbolic<btScalar[3]>("m"));
+  btVector3 x[3] = {
+    btVector3(1, 2, 3),
+    btVector3(4, 5, 6),
+    btVector3(7, 8, 9)
+  };
+  btSoftBody body1(&worldInfo, 3, x, symbolic<btScalar[3]>("m"));
 
   btAlignedObjectArray<btSoftBody *> bodies;
   bodies.push_back(&body1);
