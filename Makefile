@@ -5,7 +5,7 @@ LDFLAGS = -lOpenCL
 
 LLVM_LDFLAGS = -L$(BULLET_BUILD_PATH)/src/BulletMultiThreaded/GpuSoftBodySolvers/OpenCL/NVidia -L$(BULLET_BUILD_PATH)/src/BulletSoftBody -L$(BULLET_BUILD_PATH)/src/BulletCollision -L$(BULLET_BUILD_PATH)/src/LinearMath -lBulletSoftBodySolvers_OpenCL_NVidia -lBulletSoftBody -lBulletCollision -lLinearMath
 
-all: TemplateC TemplateC.bc softbody.exe
+all: TemplateC TemplateC.bc softbody.exe softbody.opt.bc
 
 softbody.exe: softbody.bc clstuff.bc btOclCommon.bc btOclUtils.bc
 	$(LLVM_BUILD_PATH)/bin/llvm-ld -o $@ $^ $(LLVM_LDFLAGS)
@@ -24,3 +24,6 @@ btOclUtils.bc: $(BULLET_PATH)/Demos/SharedOpenCL/btOclUtils.cpp
 
 %.bc: %.c
 	$(LLVM_BUILD_PATH)/bin/clang $(CPPFLAGS) -D__KLEE -emit-llvm -c -o $@ $<
+
+%.opt.bc: %.exe
+	$(LLVM_BUILD_PATH)/bin/opt -simplifycfg -phi-node-folding-threshold=1000 -unsafe-phi-node-folding $<.bc -o $@
