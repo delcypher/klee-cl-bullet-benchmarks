@@ -28,8 +28,12 @@ int main(int argc, char **argv) {
     btVector3(7, 8, 9)
   };
   btSoftBody body1(&worldInfo, 3, x, symbolic<btScalar[3]>("m"));
+  body1.appendLink(0, 1);
+  body1.appendLink(1, 2);
+  body1.appendLink(2, 0);
 
   btAlignedObjectArray<btSoftBody *> bodies;
   bodies.push_back(&body1);
   cls.optimize(bodies);
+  cls.solveConstraints(symbolic<float>("solverdt"));
 }
