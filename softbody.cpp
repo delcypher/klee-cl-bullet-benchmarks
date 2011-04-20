@@ -1,5 +1,6 @@
 #include <BulletMultiThreaded/GpuSoftBodySolvers/OpenCL/btSoftBodySolver_OpenCL.h>
 #include <BulletSoftBody/btSoftBody.h>
+#include <BulletSoftBody/btSoftBodySolverVertexBuffer.h>
 #include <clstuff.h>
 #include <klee/klee.h>
 
@@ -28,6 +29,7 @@ int main(int argc, char **argv) {
     btVector3(7, 8, 9)
   };
   btSoftBody body1(&worldInfo, 3, x, symbolic<btScalar[3]>("m"));
+  body1.setSoftBodySolver(&cls);
   body1.appendLink(0, 1);
   body1.appendLink(1, 2);
   body1.appendLink(2, 0);
@@ -36,4 +38,12 @@ int main(int argc, char **argv) {
   bodies.push_back(&body1);
   cls.optimize(bodies);
   cls.solveConstraints(symbolic<float>("solverdt"));
+
+  float out[9];
+  btCPUVertexBufferDescriptor outDesc(out, 0, 3);
+
+  btSoftBodySolverOutputCLtoCPU cl2cpu;
+  cl2cpu.copySoftBodyToVertexBuffer(&body1, &outDesc);
+  for (unsigned i = 0; i != 9; ++i)
+    klee_print_expr("out[i]", out[i]);
 }
