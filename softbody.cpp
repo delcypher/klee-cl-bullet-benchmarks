@@ -34,6 +34,7 @@ int main(int argc, char **argv) {
   body1.appendLink(0, 1);
   body1.appendLink(1, 2);
   body1.appendLink(2, 0);
+  body1.addVelocity(symbolic<btVector3>("velocity"));
 
   btAlignedObjectArray<btSoftBody *> bodies;
   bodies.push_back(&body1);
