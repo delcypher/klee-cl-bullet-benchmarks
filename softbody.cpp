@@ -14,6 +14,7 @@ int main(int argc, char **argv) {
   initCL(0, 0);
   btOpenCLSoftBodySolver cls(g_cqCommandQue, g_cxMainContext);
   cls.checkInitialized();
+  cls.setNumberOfVelocityIterations(1);
 //  cls.solveConstraints(1.0);
   
   btSoftBodyWorldInfo worldInfo;
