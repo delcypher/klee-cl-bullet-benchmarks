@@ -29,7 +29,8 @@ int main(int argc, char **argv) {
     btVector3(4, 5, 6),
     btVector3(7, 8, 9)
   };
-  btSoftBody body1(&worldInfo, 3, x, symbolic<btScalar[3]>("m"));
+  // btSoftBody body1(&worldInfo, 3, x, symbolic<btScalar[3]>("m"));
+  btSoftBody body1(&worldInfo, 3, x, 0);
   body1.setSoftBodySolver(&cls);
   body1.appendLink(0, 1);
   body1.appendLink(1, 2);
