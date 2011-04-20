@@ -3,7 +3,7 @@ include Makefile.config
 CPPFLAGS = -I$(KLEE_PATH)/include -I$(BULLET_PATH)/src -I$(BULLET_PATH)/Demos/SharedOpenCL -I$(BULLET_PATH)/Demos/OpenCLClothDemo -ggdb3
 LDFLAGS = -lOpenCL
 
-LLVM_LDFLAGS = -L$(BULLET_BUILD_PATH)/src/BulletMultiThreaded/GpuSoftBodySolvers/OpenCL/NVidia -L$(BULLET_BUILD_PATH)/src/BulletSoftBody -L$(BULLET_BUILD_PATH)/src/BulletCollision -L$(BULLET_BUILD_PATH)/src/LinearMath -lBulletSoftBodySolvers_OpenCL_NVidia -lBulletSoftBody -lBulletCollision -lLinearMath
+LLVM_LDFLAGS = -L$(BULLET_BUILD_PATH)/src/BulletMultiThreaded/GpuSoftBodySolvers/OpenCL/NVidia -L$(BULLET_BUILD_PATH)/src/BulletMultiThreaded/GpuSoftBodySolvers/CPU -L$(BULLET_BUILD_PATH)/src/BulletSoftBody -L$(BULLET_BUILD_PATH)/src/BulletCollision -L$(BULLET_BUILD_PATH)/src/LinearMath -lBulletSoftBodySolvers_OpenCL_NVidia -lBulletSoftBodySolvers_CPU -lBulletSoftBody -lBulletCollision -lLinearMath
 
 all: TemplateC TemplateC.bc softbody.exe softbody.opt.bc
 

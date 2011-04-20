@@ -1,3 +1,4 @@
+#include <BulletMultiThreaded/GpuSoftBodySolvers/CPU/btSoftBodySolver_CPU.h>
 #include <BulletMultiThreaded/GpuSoftBodySolvers/OpenCL/btSoftBodySolver_OpenCL.h>
 #include <BulletSoftBody/btSoftBody.h>
 #include <BulletSoftBody/btSoftBodySolverVertexBuffer.h>
@@ -10,43 +11,69 @@ extern cl_command_queue         g_cqCommandQue;
 
 using namespace klee;
 
-int main(int argc, char **argv) {
-  initCL(0, 0);
-  btOpenCLSoftBodySolver cls(g_cqCommandQue, g_cxMainContext);
-  cls.checkInitialized();
-  cls.setNumberOfVelocityIterations(1);
-//  cls.solveConstraints(1.0);
+void runTestProblem(btSoftBodySolver *solver, btSoftBodySolverOutput *output, float out[9],
+                    btScalar air_density, btScalar water_density, btScalar water_offset,
+                    const btVector3 &water_normal, const btVector3 &m_gravity,
+                    const btVector3 &velocity, float solverdt) {
+  solver->checkInitialized();
+  solver->setNumberOfVelocityIterations(1);
   
   btSoftBodyWorldInfo worldInfo;
-  worldInfo.air_density = symbolic<btScalar>("air_density");
-  worldInfo.water_density = symbolic<btScalar>("water_density");
-  worldInfo.water_offset = symbolic<btScalar>("water_offset");
-  worldInfo.water_normal = symbolic<btVector3>("water_normal");
-  worldInfo.m_gravity = symbolic<btVector3>("m_gravity");
+  worldInfo.air_density = air_density;
+  worldInfo.water_density = water_density;
+  worldInfo.water_offset = water_offset;
+  worldInfo.water_normal = water_normal;
+  worldInfo.m_gravity = m_gravity;
 
   btVector3 x[3] = {
     btVector3(1, 2, 3),
     btVector3(4, 5, 6),
     btVector3(7, 8, 9)
   };
-  // btSoftBody body1(&worldInfo, 3, x, symbolic<btScalar[3]>("m"));
   btSoftBody body1(&worldInfo, 3, x, 0);
-  body1.setSoftBodySolver(&cls);
+  body1.setSoftBodySolver(solver);
   body1.appendLink(0, 1);
   body1.appendLink(1, 2);
   body1.appendLink(2, 0);
-  body1.addVelocity(symbolic<btVector3>("velocity"));
+  body1.addVelocity(velocity);
 
   btAlignedObjectArray<btSoftBody *> bodies;
   bodies.push_back(&body1);
-  cls.optimize(bodies);
-  cls.solveConstraints(symbolic<float>("solverdt"));
+  solver->optimize(bodies);
+  solver->solveConstraints(solverdt);
 
-  float out[9];
   btCPUVertexBufferDescriptor outDesc(out, 0, 3);
+  output->copySoftBodyToVertexBuffer(&body1, &outDesc);
+}
 
+int main(int argc, char **argv) {
+  initCL(0, 0);
+
+  float cpuout[9], gpuout[9];
+  
+  symbolic<btScalar> air_density("air_density");
+  symbolic<btScalar> water_density("water_density");
+  symbolic<btScalar> water_offset("water_offset");
+  symbolic<btVector3> water_normal("water_normal");
+  symbolic<btVector3> m_gravity("m_gravity");
+
+  symbolic<btVector3> velocity("velocity");
+  symbolic<float> solverdt("solverdt");
+  
+  btCPUSoftBodySolver cpuSolver;
+  btSoftBodySolverOutputCPUtoCPU cpu2cpu;
+  runTestProblem(&cpuSolver, &cpu2cpu, cpuout,
+                 air_density, water_density, water_offset, water_normal,
+                 m_gravity, velocity, solverdt);
+ 
+  btOpenCLSoftBodySolver clSolver(g_cqCommandQue, g_cxMainContext);
   btSoftBodySolverOutputCLtoCPU cl2cpu;
-  cl2cpu.copySoftBodyToVertexBuffer(&body1, &outDesc);
-  for (unsigned i = 0; i != 9; ++i)
-    klee_print_expr("out[i]", out[i]);
+  runTestProblem(&clSolver, &cl2cpu, gpuout,
+                 air_density, water_density, water_offset, water_normal,
+                 m_gravity, velocity, solverdt);
+
+  for (unsigned i = 0; i != 9; ++i) {
+    klee_print_expr("cpuout[i]", cpuout[i]);
+    klee_print_expr("gpuout[i]", gpuout[i]);
+  }
 }
