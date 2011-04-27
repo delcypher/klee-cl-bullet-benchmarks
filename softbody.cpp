@@ -14,9 +14,10 @@ using namespace klee;
 void runTestProblem(btSoftBodySolver *solver, btSoftBodySolverOutput *output, float out[9],
                     btScalar air_density, btScalar water_density, btScalar water_offset,
                     const btVector3 &water_normal, const btVector3 &m_gravity,
-                    const btVector3 &velocity, float solverdt) {
+                    const btVector3 &velocity, btScalar friction,
+                    btScalar kVCF, btScalar kDP, btScalar kDG, btScalar kLF,
+                    float solverdt) {
   solver->checkInitialized();
-  solver->setNumberOfVelocityIterations(1);
   
   btSoftBodyWorldInfo worldInfo;
   worldInfo.air_density = air_density;
@@ -36,6 +37,12 @@ void runTestProblem(btSoftBodySolver *solver, btSoftBodySolverOutput *output, fl
   body1.appendLink(1, 2);
   body1.appendLink(2, 0);
   body1.addVelocity(velocity);
+  body1.setFriction(friction);
+
+  body1.m_cfg.kVCF = kVCF;
+  body1.m_cfg.kDP = kDP;
+  body1.m_cfg.kDG = kDG;
+  body1.m_cfg.kLF = kLF;
 
   btAlignedObjectArray<btSoftBody *> bodies;
   bodies.push_back(&body1);
@@ -58,19 +65,30 @@ int main(int argc, char **argv) {
   symbolic<btVector3> m_gravity("m_gravity");
 
   symbolic<btVector3> velocity("velocity");
+  symbolic<btScalar> friction("friction");
+
+  symbolic<btScalar> kVCF("kVCF");
+  symbolic<btScalar> kDP("kDP");
+  symbolic<btScalar> kDG("kDG");
+  symbolic<btScalar> kLF("kLF");
+
   symbolic<float> solverdt("solverdt");
   
   btCPUSoftBodySolver cpuSolver;
   btSoftBodySolverOutputCPUtoCPU cpu2cpu;
   runTestProblem(&cpuSolver, &cpu2cpu, cpuout,
                  air_density, water_density, water_offset, water_normal,
-                 m_gravity, velocity, solverdt);
+                 m_gravity, velocity, friction,
+                 kVCF, kDP, kDG, kLF,
+                 solverdt);
  
   btOpenCLSoftBodySolver clSolver(g_cqCommandQue, g_cxMainContext);
   btSoftBodySolverOutputCLtoCPU cl2cpu;
   runTestProblem(&clSolver, &cl2cpu, gpuout,
                  air_density, water_density, water_offset, water_normal,
-                 m_gravity, velocity, solverdt);
+                 m_gravity, velocity, friction,
+                 kVCF, kDP, kDG, kLF,
+                 solverdt);
 
   for (unsigned i = 0; i != 9; ++i) {
     klee_print_expr("cpuout[i]", cpuout[i]);
