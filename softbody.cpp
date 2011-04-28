@@ -5,6 +5,8 @@
 #include <clstuff.h>
 #include <klee/klee.h>
 
+#include "klee-bits.h"
+
 extern cl_context                       g_cxMainContext;
 extern cl_device_id                     g_cdDevice;
 extern cl_command_queue         g_cqCommandQue;
@@ -104,8 +106,6 @@ int main(int argc, char **argv) {
                  kVCF, kDP, kDG, kLF,
                  solverdt);
 
-  for (unsigned i = 0; i != 9; ++i) {
-    klee_print_expr("cpuout[i]", cpuout[i]);
-    klee_print_expr("gpuout[i]", gpuout[i]);
-  }
+  for (unsigned i = 0; i != 9; ++i)
+    klee_print_expr("cpuout[i] == gpuout[i]", float_bitwise_eq(cpuout[i], gpuout[i]));
 }
