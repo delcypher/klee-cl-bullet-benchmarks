@@ -14,6 +14,7 @@ using namespace klee;
 void runTestProblem(btSoftBodySolver *solver, btSoftBodySolverOutput *output, float out[9],
                     btScalar air_density, btScalar water_density, btScalar water_offset,
                     const btVector3 &water_normal, const btVector3 &m_gravity,
+                    btScalar kLST, btScalar kAST, btScalar kVST,
                     const btVector3 &velocity, btScalar friction,
                     btScalar kVCF, btScalar kDP, btScalar kDG, btScalar kLF,
                     float solverdt) {
@@ -33,9 +34,16 @@ void runTestProblem(btSoftBodySolver *solver, btSoftBodySolverOutput *output, fl
   };
   btSoftBody body1(&worldInfo, 3, x, 0);
   body1.setSoftBodySolver(solver);
-  body1.appendLink(0, 1);
-  body1.appendLink(1, 2);
-  body1.appendLink(2, 0);
+
+  btSoftBody::Material *mat = body1.appendMaterial();
+  mat->m_kLST = kLST;
+  mat->m_kAST = kAST;
+  mat->m_kVST = kVST;
+
+  body1.appendLink(0, 1, mat);
+  body1.appendLink(1, 2, mat);
+  body1.appendLink(2, 0, mat);
+
   body1.addVelocity(velocity);
   body1.setFriction(friction);
 
@@ -64,6 +72,10 @@ int main(int argc, char **argv) {
   symbolic<btVector3> water_normal("water_normal");
   symbolic<btVector3> m_gravity("m_gravity");
 
+  symbolic<btScalar> kLST("kLST");
+  symbolic<btScalar> kAST("kAST");
+  symbolic<btScalar> kVST("kVST");
+
   symbolic<btVector3> velocity("velocity");
   symbolic<btScalar> friction("friction");
 
@@ -77,16 +89,18 @@ int main(int argc, char **argv) {
   btCPUSoftBodySolver cpuSolver;
   btSoftBodySolverOutputCPUtoCPU cpu2cpu;
   runTestProblem(&cpuSolver, &cpu2cpu, cpuout,
-                 air_density, water_density, water_offset, water_normal,
-                 m_gravity, velocity, friction,
+                 air_density, water_density, water_offset, water_normal, m_gravity,
+                 kLST, kAST, kVST,
+                 velocity, friction,
                  kVCF, kDP, kDG, kLF,
                  solverdt);
  
   btOpenCLSoftBodySolver clSolver(g_cqCommandQue, g_cxMainContext);
   btSoftBodySolverOutputCLtoCPU cl2cpu;
   runTestProblem(&clSolver, &cl2cpu, gpuout,
-                 air_density, water_density, water_offset, water_normal,
-                 m_gravity, velocity, friction,
+                 air_density, water_density, water_offset, water_normal, m_gravity,
+                 kLST, kAST, kVST,
+                 velocity, friction,
                  kVCF, kDP, kDG, kLF,
                  solverdt);
 
