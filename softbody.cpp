@@ -3,7 +3,11 @@
 #include <BulletSoftBody/btSoftBody.h>
 #include <BulletSoftBody/btSoftBodySolverVertexBuffer.h>
 #include <clstuff.h>
+#ifdef __KLEE
 #include <klee/klee.h>
+#else
+#include <stdio.h>
+#endif
 
 #include "klee-bits.h"
 
@@ -11,7 +15,9 @@ extern cl_context                       g_cxMainContext;
 extern cl_device_id                     g_cdDevice;
 extern cl_command_queue         g_cqCommandQue;
 
+#ifdef __KLEE
 using namespace klee;
+#endif
 
 void runTestProblem(btSoftBodySolver *solver, btSoftBodySolverOutput *output, float out[9],
                     btScalar air_density, btScalar water_density, btScalar water_offset,
@@ -68,6 +74,7 @@ int main(int argc, char **argv) {
 
   float cpuout[9], gpuout[9];
   
+#ifdef __KLEE
   symbolic<btScalar> air_density("air_density");
   symbolic<btScalar> water_density("water_density");
   symbolic<btScalar> water_offset("water_offset");
@@ -87,6 +94,27 @@ int main(int argc, char **argv) {
   symbolic<btScalar> kLF("kLF");
 
   symbolic<float> solverdt("solverdt");
+#else
+  btScalar air_density = drand48() * 100.;
+  btScalar water_density = drand48() * 100.;
+  btScalar water_offset = drand48() * 100.;
+  btVector3 water_normal(drand48() * 100., drand48() * 100., drand48() * 100.);
+  btVector3 m_gravity(drand48() * 100., drand48() * 100., drand48() * 100.);
+
+  btScalar kLST = drand48() * 100.;
+  btScalar kAST = drand48() * 100.;
+  btScalar kVST = drand48() * 100.;
+
+  btVector3 velocity(drand48() * 100., drand48() * 100., drand48() * 100.);
+  btScalar friction = drand48() * 100.;
+
+  btScalar kVCF = drand48() * 100.;
+  btScalar kDP = drand48() * 100.;
+  btScalar kDG = drand48() * 100.;
+  btScalar kLF = drand48() * 100.;
+
+  float solverdt = drand48() * 100.;
+#endif
   
   btCPUSoftBodySolver cpuSolver;
   btSoftBodySolverOutputCPUtoCPU cpu2cpu;
@@ -106,6 +134,11 @@ int main(int argc, char **argv) {
                  kVCF, kDP, kDG, kLF,
                  solverdt);
 
+#ifdef __KLEE
   for (unsigned i = 0; i != 9; ++i)
     klee_print_expr("cpuout[i] == gpuout[i]", float_bitwise_eq(cpuout[i], gpuout[i]));
+#else
+  for (unsigned i = 0; i != 9; ++i)
+    printf("cpuout[%d] / gpuout[%d] : %f / %f\n", i, i, cpuout[i], gpuout[i]);
+#endif
 }
