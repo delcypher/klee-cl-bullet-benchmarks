@@ -1229,6 +1229,39 @@ double CPeval(struct CPbinding *bindings, char *kLST) {
   return bindings->n0;
 }
 
+static cl_int dump_binaries(cl_program prog, const char *prefix) {
+  cl_int errcode;
+  size_t num_binaries, i;
+
+  size_t *binary_sizes;
+  unsigned char **binaries;
+
+  if ((errcode = clGetProgramInfo(prog, CL_PROGRAM_BINARY_SIZES, 0, NULL, &num_binaries)) != CL_SUCCESS)
+    return errcode;
+  num_binaries /= sizeof(size_t);
+
+  binary_sizes = malloc(sizeof(size_t) * num_binaries);
+  binaries = malloc(sizeof(unsigned char *) * num_binaries);
+
+  if ((errcode = clGetProgramInfo(prog, CL_PROGRAM_BINARY_SIZES, sizeof(size_t) * num_binaries, binary_sizes, NULL)) != CL_SUCCESS)
+    return errcode;
+  if ((errcode = clGetProgramInfo(prog, CL_PROGRAM_BINARIES, sizeof(unsigned char *) * num_binaries, binaries, NULL)) != CL_SUCCESS)
+    return errcode;
+
+  for (i = 0; i != num_binaries; ++i) {
+    char name[64];
+    sprintf(name, "%s.bin%lu", prefix, (unsigned long) i);
+
+    FILE *f = fopen(name, "w");
+    fwrite(binaries[i], binary_sizes[i], 1, f);
+    fclose(f);
+  }
+
+  free(binary_sizes);
+  free(binaries);
+  return CL_SUCCESS;
+}
+
 int main(int argc, char **argv) {
   cl_platform_id platform;
   cl_device_id device;
@@ -1273,6 +1306,8 @@ int main(int argc, char **argv) {
     return 7;
   }
 
+  // dump_binaries(prog, "softbody-problem");
+  
   cq = clCreateCommandQueue(ctx, device, 0, &errcode);
   if (!cq)
     return 8;
