@@ -319,9 +319,9 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n19 = (((ushort) bindings->n20) << 8) | (((ushort) bindings->n21) & 255UL);\n\
   bindings->n17 = (((uint) bindings->n18) << 16) | (((uint) bindings->n19) & 65535UL);\n\
   bindings->n15 = (((uint) bindings->n16) << 24) | (bindings->n17 & 16777215UL);\n\
-  bindings->n14 = 2.f / (*(__global float *) &bindings->n15);\n\
+  bindings->n14 = ((double) 2.f) / ((double) (*(__global float *) &bindings->n15));\n\
   bindings->n13 = bindings->n14 * 54.f;\n\
-  bindings->n12 = -1.9073486328125e-06f / bindings->n13;\n\
+  bindings->n12 = ((double) -1.9073486328125e-06f) / ((double) bindings->n13);\n\
   bindings->n11 = 3.f * bindings->n12;\n\
   bindings->n10 = 1.f - bindings->n11;\n\
   bindings->n27 = 4.f + bindings->n11;\n\
@@ -338,7 +338,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n29 = 26.999998092651367188f - bindings->n30;\n\
   bindings->n40 = 26.999998092651367188f + bindings->n30;\n\
   bindings->n39 = bindings->n14 * bindings->n40;\n\
-  bindings->n28 = bindings->n29 / bindings->n39;\n\
+  bindings->n28 = ((double) bindings->n29) / ((double) bindings->n39);\n\
   bindings->n25 = bindings->n26 * bindings->n28;\n\
   bindings->n24 = 7.f + bindings->n25;\n\
   bindings->n23 = bindings->n10 - bindings->n24;\n\
@@ -358,7 +358,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n42 = 107.99999237060546875f - bindings->n43;\n\
   bindings->n57 = 107.99999237060546875f + bindings->n43;\n\
   bindings->n56 = bindings->n14 * bindings->n57;\n\
-  bindings->n41 = bindings->n42 / bindings->n56;\n\
+  bindings->n41 = ((double) bindings->n42) / ((double) bindings->n56);\n\
   bindings->n22 = bindings->n23 * bindings->n41;\n\
   bindings->n9 = bindings->n10 + bindings->n22;\n\
   bindings->n60 = bindings->n27 - bindings->n25;\n\
@@ -379,7 +379,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n62 = 26.999998092651367188f - bindings->n63;\n\
   bindings->n77 = 26.999998092651367188f + bindings->n63;\n\
   bindings->n76 = bindings->n14 * bindings->n77;\n\
-  bindings->n61 = bindings->n62 / bindings->n76;\n\
+  bindings->n61 = ((double) bindings->n62) / ((double) bindings->n76);\n\
   bindings->n58 = bindings->n59 * bindings->n61;\n\
   bindings->n8 = bindings->n9 - bindings->n58;\n\
   bindings->n81 = bindings->n24 - bindings->n22;\n\
@@ -401,7 +401,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n86 = 26.999998092651367188f - bindings->n87;\n\
   bindings->n101 = 26.999998092651367188f + bindings->n87;\n\
   bindings->n100 = bindings->n14 * bindings->n101;\n\
-  bindings->n85 = bindings->n86 / bindings->n100;\n\
+  bindings->n85 = ((double) bindings->n86) / ((double) bindings->n100);\n\
   bindings->n82 = bindings->n83 * bindings->n85;\n\
   bindings->n80 = bindings->n81 + bindings->n82;\n\
   bindings->n79 = bindings->n8 - bindings->n80;\n\
@@ -421,7 +421,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n103 = 107.99999237060546875f - bindings->n104;\n\
   bindings->n118 = 107.99999237060546875f + bindings->n104;\n\
   bindings->n117 = bindings->n14 * bindings->n118;\n\
-  bindings->n102 = bindings->n103 / bindings->n117;\n\
+  bindings->n102 = ((double) bindings->n103) / ((double) bindings->n117);\n\
   bindings->n78 = bindings->n79 * bindings->n102;\n\
   bindings->n7 = bindings->n8 + bindings->n78;\n\
   bindings->n121 = bindings->n84 - bindings->n82;\n\
@@ -442,7 +442,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n123 = 26.999998092651367188f - bindings->n124;\n\
   bindings->n138 = 26.999998092651367188f + bindings->n124;\n\
   bindings->n137 = bindings->n14 * bindings->n138;\n\
-  bindings->n122 = bindings->n123 / bindings->n137;\n\
+  bindings->n122 = ((double) bindings->n123) / ((double) bindings->n137);\n\
   bindings->n119 = bindings->n120 * bindings->n122;\n\
   bindings->n6 = bindings->n7 - bindings->n119;\n\
   bindings->n142 = bindings->n80 - bindings->n78;\n\
@@ -464,7 +464,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n147 = 26.999998092651367188f - bindings->n148;\n\
   bindings->n162 = 26.999998092651367188f + bindings->n148;\n\
   bindings->n161 = bindings->n14 * bindings->n162;\n\
-  bindings->n146 = bindings->n147 / bindings->n161;\n\
+  bindings->n146 = ((double) bindings->n147) / ((double) bindings->n161);\n\
   bindings->n143 = bindings->n144 * bindings->n146;\n\
   bindings->n141 = bindings->n142 + bindings->n143;\n\
   bindings->n140 = bindings->n6 - bindings->n141;\n\
@@ -484,7 +484,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n164 = 107.99999237060546875f - bindings->n165;\n\
   bindings->n179 = 107.99999237060546875f + bindings->n165;\n\
   bindings->n178 = bindings->n14 * bindings->n179;\n\
-  bindings->n163 = bindings->n164 / bindings->n178;\n\
+  bindings->n163 = ((double) bindings->n164) / ((double) bindings->n178);\n\
   bindings->n139 = bindings->n140 * bindings->n163;\n\
   bindings->n5 = bindings->n6 + bindings->n139;\n\
   bindings->n182 = bindings->n145 - bindings->n143;\n\
@@ -505,7 +505,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n184 = 26.999998092651367188f - bindings->n185;\n\
   bindings->n199 = 26.999998092651367188f + bindings->n185;\n\
   bindings->n198 = bindings->n14 * bindings->n199;\n\
-  bindings->n183 = bindings->n184 / bindings->n198;\n\
+  bindings->n183 = ((double) bindings->n184) / ((double) bindings->n198);\n\
   bindings->n180 = bindings->n181 * bindings->n183;\n\
   bindings->n4 = bindings->n5 - bindings->n180;\n\
   bindings->n203 = bindings->n141 - bindings->n139;\n\
@@ -527,7 +527,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n208 = 26.999998092651367188f - bindings->n209;\n\
   bindings->n223 = 26.999998092651367188f + bindings->n209;\n\
   bindings->n222 = bindings->n14 * bindings->n223;\n\
-  bindings->n207 = bindings->n208 / bindings->n222;\n\
+  bindings->n207 = ((double) bindings->n208) / ((double) bindings->n222);\n\
   bindings->n204 = bindings->n205 * bindings->n207;\n\
   bindings->n202 = bindings->n203 + bindings->n204;\n\
   bindings->n201 = bindings->n4 - bindings->n202;\n\
@@ -547,7 +547,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n225 = 107.99999237060546875f - bindings->n226;\n\
   bindings->n240 = 107.99999237060546875f + bindings->n226;\n\
   bindings->n239 = bindings->n14 * bindings->n240;\n\
-  bindings->n224 = bindings->n225 / bindings->n239;\n\
+  bindings->n224 = ((double) bindings->n225) / ((double) bindings->n239);\n\
   bindings->n200 = bindings->n201 * bindings->n224;\n\
   bindings->n3 = bindings->n4 + bindings->n200;\n\
   bindings->n243 = bindings->n206 - bindings->n204;\n\
@@ -568,7 +568,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n245 = 26.999998092651367188f - bindings->n246;\n\
   bindings->n260 = 26.999998092651367188f + bindings->n246;\n\
   bindings->n259 = bindings->n14 * bindings->n260;\n\
-  bindings->n244 = bindings->n245 / bindings->n259;\n\
+  bindings->n244 = ((double) bindings->n245) / ((double) bindings->n259);\n\
   bindings->n241 = bindings->n242 * bindings->n244;\n\
   bindings->n2 = bindings->n3 - bindings->n241;\n\
   bindings->n264 = bindings->n202 - bindings->n200;\n\
@@ -590,7 +590,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n269 = 26.999998092651367188f - bindings->n270;\n\
   bindings->n284 = 26.999998092651367188f + bindings->n270;\n\
   bindings->n283 = bindings->n14 * bindings->n284;\n\
-  bindings->n268 = bindings->n269 / bindings->n283;\n\
+  bindings->n268 = ((double) bindings->n269) / ((double) bindings->n283);\n\
   bindings->n265 = bindings->n266 * bindings->n268;\n\
   bindings->n263 = bindings->n264 + bindings->n265;\n\
   bindings->n262 = bindings->n2 - bindings->n263;\n\
@@ -610,7 +610,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n286 = 107.99999237060546875f - bindings->n287;\n\
   bindings->n301 = 107.99999237060546875f + bindings->n287;\n\
   bindings->n300 = bindings->n14 * bindings->n301;\n\
-  bindings->n285 = bindings->n286 / bindings->n300;\n\
+  bindings->n285 = ((double) bindings->n286) / ((double) bindings->n300);\n\
   bindings->n261 = bindings->n262 * bindings->n285;\n\
   bindings->n1 = bindings->n2 + bindings->n261;\n\
   bindings->n0 = ((double) bindings->n1);\n\
