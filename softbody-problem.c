@@ -319,7 +319,7 @@ __kernel void CPeval(__global struct CPbinding *bindings, __global char *kLST) {
   bindings->n19 = (((ushort) bindings->n20) << 8) | (((ushort) bindings->n21) & 255UL);\n\
   bindings->n17 = (((uint) bindings->n18) << 16) | (((uint) bindings->n19) & 65535UL);\n\
   bindings->n15 = (((uint) bindings->n16) << 24) | (bindings->n17 & 16777215UL);\n\
-  bindings->n14 = 2.f / (*(float *) &bindings->n15);\n\
+  bindings->n14 = 2.f / (*(__global float *) &bindings->n15);\n\
   bindings->n13 = bindings->n14 * 54.f;\n\
   bindings->n12 = -1.9073486328125e-06f / bindings->n13;\n\
   bindings->n11 = 3.f * bindings->n12;\n\
