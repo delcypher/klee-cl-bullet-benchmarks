@@ -4,6 +4,7 @@
 
 static char opencl_code[] = "\
 #pragma OPENCL EXTENSION cl_khr_fp64: enable\n\
+#pragma OPENCL EXTENSION cl_khr_byte_addressable_store: enable\n\
 struct CPbinding {\n\
   uchar n16;\n\
   uchar n18;\n\
