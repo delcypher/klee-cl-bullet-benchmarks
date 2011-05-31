@@ -1293,9 +1293,31 @@ int main(int argc, char **argv) {
   if (!ctx)
     return 3;
 
-  prog = clCreateProgramWithSource(ctx, 1, &opencl_code_ptr, &opencl_code_len, &errcode);
-  if (!prog)
-    return 4;
+  if (argc > 1) {
+    unsigned char *data;
+    size_t length;
+    FILE *bin = fopen(argv[1], "r");
+    if (!bin)
+      return 4;
+
+    fseek(bin, 0, SEEK_END);
+    length = (size_t) ftell(bin);
+    fseek(bin, 0, SEEK_SET);
+
+    data = malloc(length);
+    fread(data, length, 1, bin);
+    fclose(bin);
+ 
+    prog = clCreateProgramWithBinary(ctx, 1, &device, &length, &data, NULL, &errcode);
+    if (!prog)
+      return 45;
+
+    free(data);
+  } else {
+    prog = clCreateProgramWithSource(ctx, 1, &opencl_code_ptr, &opencl_code_len, &errcode);
+    if (!prog)
+      return 4;
+  }
 
   sprintf(flags, "-D HOST_SIZEOF_CPBINDING=%lu", (unsigned long) sizeof(struct CPbinding));
 
@@ -1311,7 +1333,8 @@ int main(int argc, char **argv) {
     return 7;
   }
 
-  dump_binaries(prog, "softbody-problem");
+  if (argc <= 1)
+    dump_binaries(prog, "softbody-problem");
   
   cq = clCreateCommandQueue(ctx, device, 0, &errcode);
   if (!cq)
