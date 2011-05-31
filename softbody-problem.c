@@ -1232,20 +1232,23 @@ double CPeval(struct CPbinding *bindings, char *kLST) {
 
 static cl_int dump_binaries(cl_program prog, const char *prefix) {
   cl_int errcode;
-  size_t num_binaries, i;
+  cl_uint num_binaries, i;
 
   size_t *binary_sizes;
   unsigned char **binaries;
 
-  if ((errcode = clGetProgramInfo(prog, CL_PROGRAM_BINARY_SIZES, 0, NULL, &num_binaries)) != CL_SUCCESS)
+  if ((errcode = clGetProgramInfo(prog, CL_PROGRAM_NUM_DEVICES, sizeof(cl_uint), &num_binaries, NULL)) != CL_SUCCESS)
     return errcode;
-  num_binaries /= sizeof(size_t);
 
   binary_sizes = malloc(sizeof(size_t) * num_binaries);
   binaries = malloc(sizeof(unsigned char *) * num_binaries);
 
   if ((errcode = clGetProgramInfo(prog, CL_PROGRAM_BINARY_SIZES, sizeof(size_t) * num_binaries, binary_sizes, NULL)) != CL_SUCCESS)
     return errcode;
+
+  for (i = 0; i != num_binaries; ++i)
+    binaries[i] = malloc(binary_sizes[i]);
+
   if ((errcode = clGetProgramInfo(prog, CL_PROGRAM_BINARIES, sizeof(unsigned char *) * num_binaries, binaries, NULL)) != CL_SUCCESS)
     return errcode;
 
@@ -1256,6 +1259,7 @@ static cl_int dump_binaries(cl_program prog, const char *prefix) {
     FILE *f = fopen(name, "w");
     fwrite(binaries[i], binary_sizes[i], 1, f);
     fclose(f);
+    free(binaries[i]);
   }
 
   free(binary_sizes);
@@ -1307,7 +1311,7 @@ int main(int argc, char **argv) {
     return 7;
   }
 
-  // dump_binaries(prog, "softbody-problem");
+  dump_binaries(prog, "softbody-problem");
   
   cq = clCreateCommandQueue(ctx, device, 0, &errcode);
   if (!cq)
