@@ -7,7 +7,7 @@ BULLET_LIBS = -LBULLET_BUILD_PATH/src/BulletMultiThreaded/GpuSoftBodySolvers/Ope
 LDFLAGS = -lOpenCL $(subst BULLET_BUILD_PATH,$(BULLET_CONC_BUILD_PATH),$(BULLET_LIBS))
 LLVM_LDFLAGS = $(subst BULLET_BUILD_PATH,$(BULLET_BUILD_PATH),$(BULLET_LIBS))
 
-all: TemplateC TemplateC.bc softbody softbody.exe softbody.conc.exe softbody.opt.bc softbody.conc.opt.bc dynworld dynworld.exe dynworld.conc.exe dynworld.opt.bc dynworld.conc.opt.bc
+all: TemplateC TemplateC.bc softbody softbody.exe softbody.conc.exe softbody.opt.bc softbody.conc.opt.bc dynworld dynworld.exe dynworld.conc.exe dynworld.opt.bc dynworld.conc.opt.bc softbody-problem clcc
 
 softbody: softbody.cpp $(BULLET_PATH)/Demos/OpenCLClothDemo/clstuff.cpp $(BULLET_PATH)/Demos/SharedOpenCL/btOclCommon.cpp $(BULLET_PATH)/Demos/SharedOpenCL/btOclUtils.cpp
 	g++ -DCL_PLATFORM_NVIDIA $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
