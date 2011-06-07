@@ -21,10 +21,10 @@ softbody.exe: softbody.bc clstuff.bc btOclCommon.bc btOclUtils.bc
 softbody.conc.exe: softbody.conc.bc clstuff.bc btOclCommon.bc btOclUtils.bc
 	$(LLVM_BUILD_PATH)/bin/llvm-ld -o $@ $^ $(LLVM_LDFLAGS)
 
-dynworld.exe: softbody.bc clstuff.bc btOclCommon.bc btOclUtils.bc
+dynworld.exe: dynworld.bc clstuff.bc btOclCommon.bc btOclUtils.bc
 	$(LLVM_BUILD_PATH)/bin/llvm-ld -o $@ $^ $(LLVM_LDFLAGS)
 
-dynworld.conc.exe: softbody.conc.bc clstuff.bc btOclCommon.bc btOclUtils.bc
+dynworld.conc.exe: dynworld.conc.bc clstuff.bc btOclCommon.bc btOclUtils.bc
 	$(LLVM_BUILD_PATH)/bin/llvm-ld -o $@ $^ $(LLVM_LDFLAGS)
 
 clstuff.bc: $(BULLET_PATH)/Demos/OpenCLClothDemo/clstuff.cpp
