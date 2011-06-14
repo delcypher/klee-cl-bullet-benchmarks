@@ -87,8 +87,8 @@ int main(int argc, char **argv) {
   const double scale = 10.;
 
 #ifdef __KLEE
-  // symbolic<btScalar> air_density("air_density");
-  btScalar air_density = drand48() * scale;
+  symbolic<btScalar> air_density("air_density");
+  // btScalar air_density = drand48() * scale;
   symbolic<btScalar> water_density("water_density");
   symbolic<btScalar> water_offset("water_offset");
   symbolic<btVector3> water_normal("water_normal");
