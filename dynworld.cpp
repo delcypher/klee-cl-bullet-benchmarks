@@ -87,15 +87,16 @@ int main(int argc, char **argv) {
   const double scale = 10.;
 
 #ifdef __KLEE
-  symbolic<btScalar> air_density("air_density");
+  // symbolic<btScalar> air_density("air_density");
+  btScalar air_density = drand48() * scale;
   symbolic<btScalar> water_density("water_density");
   symbolic<btScalar> water_offset("water_offset");
   symbolic<btVector3> water_normal("water_normal");
   // symbolic<btVector3> m_gravity("m_gravity");
   btVector3 m_gravity(drand48() * scale, drand48() * scale, drand48() * scale);
 
-  // symbolic<btScalar> kLST("kLST");
-  btScalar kLST = drand48() * scale;
+  symbolic<btScalar> kLST("kLST");
+  // btScalar kLST = drand48() * scale;
   symbolic<btScalar> kAST("kAST");
   symbolic<btScalar> kVST("kVST");
 
@@ -104,10 +105,10 @@ int main(int argc, char **argv) {
 
   symbolic<btScalar> kVCF("kVCF");
   symbolic<btScalar> kDP("kDP");
-  // symbolic<btScalar> kDG("kDG");
-  // symbolic<btScalar> kLF("kLF");
-  btScalar kDG = drand48() * scale;
-  btScalar kLF = drand48() * scale;
+  symbolic<btScalar> kDG("kDG");
+  symbolic<btScalar> kLF("kLF");
+  // btScalar kDG = drand48() * scale;
+  // btScalar kLF = drand48() * scale;
 
   symbolic<float> solverdt("solverdt");
 #else
