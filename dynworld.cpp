@@ -24,7 +24,9 @@ extern cl_command_queue         g_cqCommandQue;
 using namespace klee;
 #endif
 
-void runTestProblem(btSoftBodySolver *solver, btSoftBodySolverOutput *output, float out[9],
+typedef float testOut[18];
+
+void runTestProblem(btSoftBodySolver *solver, btSoftBodySolverOutput *output, testOut &out,
                     btScalar air_density, btScalar water_density, btScalar water_offset,
                     const btVector3 &water_normal, const btVector3 &m_gravity,
                     btScalar kLST, btScalar kAST, btScalar kVST,
@@ -45,22 +47,22 @@ void runTestProblem(btSoftBodySolver *solver, btSoftBodySolverOutput *output, fl
   worldInfo.water_normal = water_normal;
   worldInfo.m_gravity = m_gravity;
 
-  btVector3 x[3] = {
+  btVector3 body1vert[3] = {
     btVector3(1, 2, 3),
     btVector3(4, 5, 6),
     btVector3(7, 8, 9)
   };
-  btSoftBody body1(&worldInfo, 3, x, 0);
+  btSoftBody body1(&worldInfo, 3, body1vert, 0);
   body1.setSoftBodySolver(solver);
 
-  btSoftBody::Material *mat = body1.appendMaterial();
-  mat->m_kLST = kLST;
-  mat->m_kAST = kAST;
-  mat->m_kVST = kVST;
+  btSoftBody::Material *mat1 = body1.appendMaterial();
+  mat1->m_kLST = kLST;
+  mat1->m_kAST = kAST;
+  mat1->m_kVST = kVST;
 
-  body1.appendLink(0, 1, mat);
-  body1.appendLink(1, 2, mat);
-  body1.appendLink(2, 0, mat);
+  body1.appendLink(0, 1, mat1);
+  body1.appendLink(1, 2, mat1);
+  body1.appendLink(2, 0, mat1);
 
   body1.addVelocity(velocity);
   body1.setFriction(friction);
@@ -71,18 +73,49 @@ void runTestProblem(btSoftBodySolver *solver, btSoftBodySolverOutput *output, fl
   body1.m_cfg.kLF = kLF;
 
   dynWorld.addSoftBody(&body1);
+
+  btVector3 body2vert[3] = {
+    btVector3(1, 4, 3),
+    btVector3(4, 7, 6),
+    btVector3(7, 10, 9)
+  };
+  btSoftBody body2(&worldInfo, 3, body2vert, 0);
+  body2.setSoftBodySolver(solver);
+
+  btSoftBody::Material *mat2 = body2.appendMaterial();
+  mat2->m_kLST = kLST;
+  mat2->m_kAST = kAST;
+  mat2->m_kVST = kVST;
+
+  body2.appendLink(0, 1, mat2);
+  body2.appendLink(1, 2, mat2);
+  body2.appendLink(2, 0, mat2);
+
+  body2.addVelocity(velocity);
+  body2.setFriction(friction);
+
+  body2.m_cfg.kVCF = kVCF;
+  body2.m_cfg.kDP = kDP;
+  body2.m_cfg.kDG = kDG;
+  body2.m_cfg.kLF = kLF;
+
+  dynWorld.addSoftBody(&body2);
+
   solver->optimize(dynWorld.getSoftBodyArray());
   dynWorld.stepSimulation(1./60.);
   solver->solveConstraints(solverdt);
 
-  btCPUVertexBufferDescriptor outDesc(out, 0, 3);
-  output->copySoftBodyToVertexBuffer(&body1, &outDesc);
+  btCPUVertexBufferDescriptor out1Desc(out, 0, 3);
+  output->copySoftBodyToVertexBuffer(&body1, &out1Desc);
+
+  btCPUVertexBufferDescriptor out2Desc(out+9, 0, 3);
+  output->copySoftBodyToVertexBuffer(&body2, &out2Desc);
 }
 
 int main(int argc, char **argv) {
   initCL(0, 0);
 
-  float cpuout[9], gpuout[9];
+  testOut cpuout, gpuout;
   
   const double scale = 10.;
 
@@ -152,10 +185,11 @@ int main(int argc, char **argv) {
                  solverdt);
 
 #ifdef __KLEE
-  for (unsigned i = 0; i != 1; ++i)
+  for (unsigned i = 0; i != sizeof(cpuout)/sizeof(cpuout[0]); ++i) {
     klee_print_expr("cpuout[i] == gpuout[i]", float_bitwise_eq(cpuout[i], gpuout[i]));
+  }
 #else
-  for (unsigned i = 0; i != 9; ++i)
+  for (unsigned i = 0; i != sizeof(cpuout)/sizeof(cpuout[0]); ++i)
     printf("cpuout[%d] / gpuout[%d] : %f / %f\n", i, i, cpuout[i], gpuout[i]);
 #endif
 }
