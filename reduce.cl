@@ -36,6 +36,7 @@ inline void op_reduction( __global volatile float *dat_g, float dat_l, op_access
 
   if ( tid<warpSize ) {
     for ( ; d>0; d>>=1 ) {
+      barrier( CLK_LOCAL_MEM_FENCE );
       if ( tid<d ) {
         switch ( reduction ) {
         case OP_INC:

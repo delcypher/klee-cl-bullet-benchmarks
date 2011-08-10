@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
   opencl_code_len = (size_t) ftell(bin);
   fseek(bin, 0, SEEK_SET);
   */
-  opencl_code_len = 1848;
+  opencl_code_len = 1886;
 
   opencl_code_ptr = malloc(opencl_code_len);
   fread(opencl_code_ptr, opencl_code_len, 1, bin);
