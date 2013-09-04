@@ -7,7 +7,8 @@ BULLET_LIBS = -LBULLET_BUILD_PATH/src/BulletMultiThreaded/GpuSoftBodySolvers/Ope
 LDFLAGS = -lOpenCL $(subst BULLET_BUILD_PATH,$(BULLET_CONC_BUILD_PATH),$(BULLET_LIBS))
 LLVM_LDFLAGS = $(subst BULLET_BUILD_PATH,$(BULLET_BUILD_PATH),$(BULLET_LIBS))
 
-all: TemplateC TemplateC.bc softbody softbody.exe softbody.conc.exe softbody.opt.bc softbody.conc.opt.bc dynworld dynworld.exe dynworld.conc.exe dynworld.opt.bc dynworld.conc.opt.bc softbody-problem clcc reduce.bc
+OUTPUTS = TemplateC TemplateC.bc softbody softbody.exe softbody.conc.exe softbody.opt.bc softbody.conc.opt.bc dynworld dynworld.exe dynworld.conc.exe dynworld.opt.bc dynworld.conc.opt.bc softbody-problem clcc reduce.bc
+all : $(OUTPUTS)
 
 softbody: softbody.cpp $(BULLET_PATH)/Demos/OpenCLClothDemo/clstuff.cpp $(BULLET_PATH)/Demos/SharedOpenCL/btOclCommon.cpp $(BULLET_PATH)/Demos/SharedOpenCL/btOclUtils.cpp
 	g++ -DCL_PLATFORM_NVIDIA $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
@@ -47,3 +48,11 @@ btOclUtils.bc: $(BULLET_PATH)/Demos/SharedOpenCL/btOclUtils.cpp
 
 %.opt.bc: %.exe
 	$(LLVM_BUILD_PATH)/bin/opt -simplifycfg -phi-node-folding-threshold=1000 -unsafe-phi-node-folding $<.bc -o $@
+ 
+# Override single-sufix rule (needed to LDFLAGS are after input file, else linking will fail)
+% : %.cpp
+	$(CXX) $(CPPFLAGS) $< -o $@ $(LDFLAGS)
+
+.PHONY: clean
+clean:
+	rm $(OUTPUTS) *.bc
