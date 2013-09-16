@@ -47,7 +47,7 @@ btOclUtils.bc: $(BULLET_PATH)/Demos/SharedOpenCL/btOclUtils.cpp
 	$(LLVM_BUILD_PATH)/bin/clang $(CPPFLAGS) -D__KLEE -emit-llvm -c -o $@ $<
 
 %.opt.bc: %.exe
-	$(LLVM_BUILD_PATH)/bin/opt -simplifycfg -phi-node-folding-threshold=1000 -unsafe-phi-node-folding $<.bc -o $@
+	$(LLVM_BUILD_PATH)/bin/opt -simplifycfg -phi-node-folding-threshold=1000 $<.bc -o $@
  
 # Override single-sufix rule (needed to LDFLAGS are after input file, else linking will fail)
 % : %.cpp
