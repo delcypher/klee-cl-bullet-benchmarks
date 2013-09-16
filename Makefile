@@ -53,6 +53,9 @@ btOclUtils.bc: $(BULLET_PATH)/Demos/SharedOpenCL/btOclUtils.cpp
 % : %.cpp
 	$(CXX) $(CPPFLAGS) $< -o $@ $(LDFLAGS)
 
+% : %.c
+	$(CC) $(CPPFLAGS) $< -o $@ $(LDFLAGS)
+
 .PHONY: clean
 clean:
 	rm $(OUTPUTS) *.bc
